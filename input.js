@@ -10,7 +10,8 @@ function keyPressed() {
 		else if (viscosity < 0.60) viscosity = random(0.70, 0.80);
 		else viscosity = random(0.90, 1.00);
 	}
-	
+
+	// clears all particles if the R key was pressed
 	if (keyCode === 82)	{
 		particles = [];
 	}
