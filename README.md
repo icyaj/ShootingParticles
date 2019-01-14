@@ -4,19 +4,20 @@
 
 -   [ShootingParticles][1]
     -   [Parameters][2]
-    -   [draw][3]
-    -   [createToolbar][4]
-    -   [positionToolbar][5]
-    -   [createText][6]
-    -   [changeGravity][7]
-    -   [changeRandomise][8]
-    -   [setVariables][9]
-    -   [createParticle][10]
--   [Particle][11]
-    -   [Parameters][12]
-    -   [move][13]
-    -   [display][14]
-    -   [handleInteractions][15]
+    -   [keyPressed][3]
+    -   [draw][4]
+    -   [createToolbar][5]
+    -   [positionToolbar][6]
+    -   [createText][7]
+    -   [changeGravity][8]
+    -   [changeRandomise][9]
+    -   [setVariables][10]
+    -   [createParticle][11]
+-   [Particle][12]
+    -   [Parameters][13]
+    -   [move][14]
+    -   [display][15]
+    -   [handleInteractions][16]
 
 ## ShootingParticles
 
@@ -24,11 +25,15 @@ A class that encompasses the toolbar, canvas including the draw-space.
 
 ### Parameters
 
--   `initGravity` **[boolean][16]** The initial boolean value for the gravity feature. (optional, default `true`)
--   `initRandomise` **[boolean][16]** The initial boolean value for the randomise feature. (optional, default `false`)
--   `initViscosity` **[number][17]** The initial value for the viscosity. (optional, default `0`)
--   `initParticleColor` **[string][18]** The initial particle colour. (optional, default `'white'`)
--   `initMaximumParticles` **[number][17]** The maximum amount of particles allowed in the space at one time. (optional, default `200`)
+-   `initGravity` **[boolean][17]** The initial boolean value for the gravity feature. (optional, default `true`)
+-   `initRandomise` **[boolean][17]** The initial boolean value for the randomise feature. (optional, default `false`)
+-   `initViscosity` **[number][18]** The initial value for the viscosity. (optional, default `0`)
+-   `initParticleColor` **[string][19]** The initial particle colour. (optional, default `'white'`)
+-   `initMaximumParticles` **[number][18]** The maximum amount of particles allowed in the space at one time. (optional, default `200`)
+
+### keyPressed
+
+Clears all particles if the C key was pressed
 
 ### draw
 
@@ -68,10 +73,10 @@ A class that represents the Particle component.
 
 ### Parameters
 
--   `x` **[number][17]** The initial x co-ordinate for the particle. (optional, default `0`)
--   `y` **[number][17]** The initial y co-ordinate for the particle. (optional, default `0`)
--   `velX` **[number][17]** The initial velocity with respect to the x-axis for the particle. (optional, default `random(-.1,.1)`)
--   `velY` **[number][17]** The initial velocity with respect to the y-axis for the particle. (optional, default `random(-.1,.1)`)
+-   `x` **[number][18]** The initial x co-ordinate for the particle. (optional, default `0`)
+-   `y` **[number][18]** The initial y co-ordinate for the particle. (optional, default `0`)
+-   `velX` **[number][18]** The initial velocity with respect to the x-axis for the particle. (optional, default `random(-.1,.1)`)
+-   `velY` **[number][18]** The initial velocity with respect to the y-axis for the particle. (optional, default `random(-.1,.1)`)
 
 ### move
 
@@ -85,38 +90,58 @@ Draws the particle onto the canvas.
 
 Updates the particle velocity depending on the distance to the other particles and if it is in close proximity to the mouse.
 
+## 
+
+Sketch from [https://www.openprocessing.org][20],
+
+Called: Jelly Sim,
+
+By: nebulaeandstars,
+
+Link: [https://www.openprocessing.org/sketch/587065][21],
+
+Licence: [https://www.openprocessing.org/home/tos][22]
+
 [1]: #shootingparticles
 
 [2]: #parameters
 
-[3]: #draw
+[3]: #keypressed
 
-[4]: #createtoolbar
+[4]: #draw
 
-[5]: #positiontoolbar
+[5]: #createtoolbar
 
-[6]: #createtext
+[6]: #positiontoolbar
 
-[7]: #changegravity
+[7]: #createtext
 
-[8]: #changerandomise
+[8]: #changegravity
 
-[9]: #setvariables
+[9]: #changerandomise
 
-[10]: #createparticle
+[10]: #setvariables
 
-[11]: #particle
+[11]: #createparticle
 
-[12]: #parameters-1
+[12]: #particle
 
-[13]: #move
+[13]: #parameters-1
 
-[14]: #display
+[14]: #move
 
-[15]: #handleinteractions
+[15]: #display
 
-[16]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
+[16]: #handleinteractions
 
-[17]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number
+[17]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
 
-[18]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
+[18]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number
+
+[19]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
+
+[20]: https://www.openprocessing.org
+
+[21]: https://www.openprocessing.org/sketch/587065
+
+[22]: https://www.openprocessing.org/home/tos

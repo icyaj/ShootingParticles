@@ -1,16 +1,3 @@
-function setup() {
-
-    // Initialises the toolbar.
-    toolbar = new ShootingParticles();
-
-}
-
-function draw() {
-
-    // Draws the plane.
-    toolbar.draw();
-
-}
 
 /** A class that encompasses the toolbar, canvas including the draw-space. */
 
@@ -28,21 +15,26 @@ class ShootingParticles {
     constructor(initGravity = true,initRandomise = false,initViscosity = 0,initParticleColor = 'white',initMaximumParticles = 200) {
 
         // Sets the parameter to the corresponding variable in the class.
-        this.gravity = initGravity;
-        this.randomise = initRandomise;
-        this.viscosity = initViscosity;
-        this.particleColor = initParticleColor;
-        this.maximumParticles = initMaximumParticles;
-        this.particles = [];
+        this._gravity = initGravity;
+        this._randomise = initRandomise;
+        this._viscosity = initViscosity;
+        this._particleColor = initParticleColor;
+        this._maximumParticles = initMaximumParticles;
+        this._particles = [];
+
+        // Adds the event listener to lookout for mouse click, drag or a key-press.
+        document.addEventListener('drag', () => this.createParticle());
+        document.addEventListener('click', () => this.createParticle());
+        document.addEventListener('keypress', () => this.keyPressed());
 
         // Sets up the toolbar and positions it corresponding to the window size.
         this.createToolbar();
         this.positionToolbar();
 
         // Creates the canvas and embeds it into the container. Also disables the scrollbar.
-        this.canvas = createCanvas(windowWidth, windowHeight);
-        this.canvas.style('display', 'block');
-        this.canvas.parent('canvasContainer');
+        this._canvas = createCanvas(windowWidth, windowHeight);
+        this._canvas.style('display', 'block');
+        this._canvas.parent('canvasContainer');
 
         // Initialises the text settings.
         textSize(20);
@@ -55,8 +47,18 @@ class ShootingParticles {
         // Sets the color mode
         colorMode(HSB, 255);
 
-        // Set the frame rate.
+        // Sets the frame rate.
         frameRate(60);
+    }
+
+    /**
+     * Clears all particles if the C key was pressed
+     */
+    keyPressed() {
+        // Clears the particles list containing all the instances of particles if the c key is pressed.
+        if (key === 'c' || key === 'C')	{
+            this._particles = [];
+        }
     }
 
     /**
@@ -74,10 +76,10 @@ class ShootingParticles {
         this.createText();
 
         // Updates each element (particle) in the particle array.
-        for (var element of this.particles.values()) {
+        for (const element of this._particles.values()) {
 
-            // If gravity is set to true the particles new velocities would be calculated.
-            if (toolbar.gravity) element.handleInteractions();
+            // If gravity is set to true the _particles new velocities would be calculated.
+            if (toolbar._gravity) element.handleInteractions();
 
             // Moves each particle, then draws it
             element.move();
@@ -91,33 +93,33 @@ class ShootingParticles {
     createToolbar() {
 
         // Create Colour slider
-        this.colorSlider = createSlider(0, 255, 127);
+        this._colorSlider = createSlider(0, 255, 127);
 
         // Create Viscosity slider
-        this.viscositySlider = createSlider(0.3, 1, 0.65, 0.05);
+        this._viscositySlider = createSlider(0.3, 1, 0.65, 0.05);
 
         // Create Size slider
-        this.sizeSlider = createSlider(0.015, 0.03, 0.0225, 0.001);
+        this._sizeSlider = createSlider(0.015, 0.03, 0.0225, 0.001);
 
         // Create the Toggle Gravity button. Also sets the changeGravity function to be called when the button is pressed.
-        this.toggleGravity = createButton('Toggle Gravity');
-        this.toggleGravity.mousePressed(this.changeGravity.bind(this));
+        this._toggleGravity = createButton('Toggle Gravity');
+        this._toggleGravity.mousePressed(this.changeGravity.bind(this));
 
         // Create the Toggle Random colours button. Also sets the changeRandomise function to be called when the button is pressed.
-        this.toggleRandomise = createButton('Randomise');
-        this.toggleRandomise.mousePressed(this.changeRandomise.bind(this));
+        this._toggleRandomise = createButton('Randomise');
+        this._toggleRandomise.mousePressed(this.changeRandomise.bind(this));
 
         // Initialises the background colour for the buttons.
-        this.toggleGravity.style('background', 'green');
-        this.toggleRandomise.style('background', 'red');
+        this._toggleGravity.style('background', 'green');
+        this._toggleRandomise.style('background', 'red');
 
         // Initialises the text colour for the buttons.
-        this.toggleGravity.style('color', 'white');
-        this.toggleRandomise.style('color', 'white');
+        this._toggleGravity.style('color', 'white');
+        this._toggleRandomise.style('color', 'white');
 
         // Standardises the size of the buttons.
-        this.toggleGravity.style('width', '100px');
-        this.toggleRandomise.style('width', '100px');
+        this._toggleGravity.style('width', '100px');
+        this._toggleRandomise.style('width', '100px');
     }
 
     /**
@@ -126,11 +128,11 @@ class ShootingParticles {
     positionToolbar() {
 
         // (re)positions all the sliders & buttons. (mainly used in the case of a window resize).
-        this.colorSlider.position(windowWidth / 10, windowHeight - (windowHeight / 20));
-        this.viscositySlider.position((windowWidth / 10) + 200, windowHeight - (windowHeight / 20));
-        this.sizeSlider.position((windowWidth / 10) + 400, windowHeight - (windowHeight / 20));
-        this.toggleGravity.position((windowWidth / 10) - 120, (windowHeight - (windowHeight / 20)) - 24);
-        this.toggleRandomise.position((windowWidth / 10) - 120, (windowHeight - (windowHeight / 20)) + 1);
+        this._colorSlider.position(windowWidth / 10, windowHeight - (windowHeight / 20));
+        this._viscositySlider.position((windowWidth / 10) + 200, windowHeight - (windowHeight / 20));
+        this._sizeSlider.position((windowWidth / 10) + 400, windowHeight - (windowHeight / 20));
+        this._toggleGravity.position((windowWidth / 10) - 120, (windowHeight - (windowHeight / 20)) - 24);
+        this._toggleRandomise.position((windowWidth / 10) - 120, (windowHeight - (windowHeight / 20)) + 1);
     }
 
     /**
@@ -155,13 +157,13 @@ class ShootingParticles {
      */
     changeGravity() {
 
-        // Toggles the gravity button. When false the gravity variable is set to true and vice versa. The toggleGravity button background is set to green or red (respectively).
-        if (this.gravity === false) {
-            this.gravity = true;
-            this.toggleGravity.style('background', 'green');
+        // Toggles the _gravity button. When false the _gravity variable is set to true and vice versa. The _toggleGravity button background is set to green or red (respectively).
+        if (this._gravity === false) {
+            this._gravity = true;
+            this._toggleGravity.style('background', 'green');
         } else {
-            this.gravity = false;
-            this.toggleGravity.style('background', 'red');
+            this._gravity = false;
+            this._toggleGravity.style('background', 'red');
         }
 
     }
@@ -171,13 +173,13 @@ class ShootingParticles {
      */
     changeRandomise() {
 
-        // Toggles the randomise button. When false the randomise variable is set to true and vice versa. The toggleRandomise button background is set to green or red (respectively).
-        if (this.randomise === false) {
-            this.randomise = true;
-            this.toggleRandomise.style('background', 'green');
+        // Toggles the _randomise button. When false the _randomise variable is set to true and vice versa. The _toggleRandomise button background is set to green or red (respectively).
+        if (this._randomise === false) {
+            this._randomise = true;
+            this._toggleRandomise.style('background', 'green');
         } else {
-            this.randomise = false;
-            this.toggleRandomise.style('background', 'red');
+            this._randomise = false;
+            this._toggleRandomise.style('background', 'red');
         }
     }
 
@@ -187,14 +189,14 @@ class ShootingParticles {
     setVariables() {
 
         // If the value of randomise is true the values of the colour and size slider is incremented.
-        if (this.randomise === true) {
-            this.colorSlider.value((this.colorSlider.value() + 5) % 256);
-            this.sizeSlider.value((this.sizeSlider.value() + 0.001) % 0.031);
+        if (this._randomise === true) {
+            this._colorSlider.value((this._colorSlider.value() + 5) % 256);
+            this._sizeSlider.value((this._sizeSlider.value() + 0.001) % 0.031);
         }
 
         // Sets the particle colour and viscosity to the slider value.
-        this.particleColor = color(this.colorSlider.value(), 255, 255, 127);
-        this.viscosity = this.viscositySlider.value();
+        this._particleColor = color(this._colorSlider.value(), 255, 255, 127);
+        this._viscosity = this._viscositySlider.value();
     }
 
     /**
@@ -204,12 +206,12 @@ class ShootingParticles {
 
         // Checks to make sure Particles are only created if the user clicks outside the toolbar inside the canvas.
         if (mouseY < windowHeight-(windowHeight/10)) {
-            this.particles.push(new Particle(mouseX, mouseY));
+            this._particles.push(new Particle(mouseX, mouseY));
         }
 
         // Deletes the oldest particle if the amount of particles on screen is over the limit.
-        if (this.particles.length > this.maximumParticles) {
-            this.particles.shift();
+        if (this._particles.length > this._maximumParticles) {
+            this._particles.shift();
         }
     }
 
@@ -229,14 +231,14 @@ class Particle {
     constructor(x = 0, y = 0, velX = random(-.1,.1), velY = random(-.1,.1)) {
 
         // Sets the parameter to the corresponding variable in the class.
-        this.xPos = x;
-        this.yPos = y;
-        this.xVel = velX;
-        this.yVel = velY;
+        this._xPos = x;
+        this._yPos = y;
+        this._xVel = velX;
+        this._yVel = velY;
 
         // Particle mass/size is the slider value plus or minus a constant (0.08). Sets the particle colour depending on the slider value.
-        this.mass = random(toolbar.sizeSlider.value() - 0.008, toolbar.sizeSlider.value() + 0.008);
-        this.color = toolbar.particleColor;
+        this._mass = random(toolbar._sizeSlider.value() - 0.008, toolbar._sizeSlider.value() + 0.008);
+        this._color = toolbar._particleColor;
     }
 
     /**
@@ -245,8 +247,8 @@ class Particle {
     move() {
 
         // Moves the particle depending on the velocity in the x-axis or y-axis.
-        this.xPos += this.xVel;
-        this.yPos += this.yVel;
+        this._xPos += this._xVel;
+        this._yPos += this._yVel;
     }
 
     /**
@@ -255,9 +257,9 @@ class Particle {
     display() {
 
         // Sets the colour for the particle.
-        fill(this.color);
+        fill(this._color);
         // Draws the particle, the mass*1000 give the size.
-        ellipse(this.xPos, this.yPos, this.mass*1000, this.mass*1000);
+        ellipse(this._xPos, this._yPos, this._mass*1000, this._mass*1000);
     }
 
     /**
@@ -265,18 +267,26 @@ class Particle {
      */
     handleInteractions() {
 
+
+        // The force & distance between the particles.
+        let x;
+        let y;
+        let dis;
+        let force;
+
         // The new velocity of the particle.
-        var accX = 0; var accY = 0;
+        let accX = 0;
+        let accY = 0;
 
         // particle interaction the particles attract/repel each other. Checks current particle with all other particles.
-        for (var element of toolbar.particles.values()) {
+        for (const element of toolbar._particles.values()) {
 
             // If the current element is not the same as the current particle.
             if (this != element) {
 
                 // Calculates distance of both particles in the x-axis and y-axis.
-                var x = element.xPos - this.xPos;
-                var y = element.yPos - this.yPos;
+                x = element._xPos - this._xPos;
+                y = element._yPos - this._yPos;
 
                 // Calculates the hypotenuse between both the particles which is the distance between the two particles.
                 dis = sqrt(x * x + y * y);
@@ -285,7 +295,7 @@ class Particle {
                 if (dis < .5) dis = .5;
 
                 // calculates the force between the particles with a constant (380).
-                var force = (dis - 380) * element.mass / dis;
+                force = (dis - 380) * element._mass / dis;
 
                 // Scales the force in the x-axis and y-axis to find the new velocity of the particle.
                 accX += force * x;
@@ -296,16 +306,16 @@ class Particle {
             if (mouseY < windowHeight-(windowHeight/10)) {
 
                 // Checks to see the distance of the mouse to the particle.
-                var x = mouseX - this.xPos;
-                var y = mouseY - this.yPos;
-                var dis = sqrt(x * x + y * y);
+                x = mouseX - this._xPos;
+                y = mouseY - this._yPos;
+                dis = sqrt(x * x + y * y);
 
                 // Adds a dampening effect to the distance.
                 if (dis < 40) dis = 40;
                 if (dis > 50) dis = 50;
 
-                // Calculates the force between the mouse and the particle..
-                var force = (dis - 50) / (5 * dis);
+                // Calculates the force between the mouse and the particle.
+                force = (dis - 50) / (5 * dis);
 
                 // Updates the value of the scaled force in the x-axis and y-axis to find the new velocity of the particle.
                 accX += force * x;
@@ -316,32 +326,21 @@ class Particle {
         }
 
         // Updates the particle velocity depending on the 'current velocity' * 'viscosity' + 'scaled force' * 'mass'
-        this.xVel = this.xVel * toolbar.viscosity + accX * this.mass;
-        this.yVel = this.yVel * toolbar.viscosity + accY * this.mass;
+        this._xVel = this._xVel * toolbar._viscosity + accX * this._mass;
+        this._yVel = this._yVel * toolbar._viscosity + accY * this._mass;
 
     }
 
-}
+    /**
+     * Sketch from https://www.openprocessing.org,
+     *
+     * Called: Jelly Sim,
+     *
+     * By: nebulaeandstars,
+     *
+     * Link: https://www.openprocessing.org/sketch/587065,
+     *
+     * Licence: https://www.openprocessing.org/home/tos
+     */
 
-// Resize canvas when window is resized
-function windowResized() {
-    resizeCanvas(windowWidth, windowHeight);
-    toolbar.positionToolbar();
-}
-
-function keyPressed() {
-    // clears all particles if the C key was pressed
-    if (keyCode === 67)	{
-        toolbar.particles = [];
-    }
-}
-
-// creates a new particle when mouse is pressed
-function mousePressed() {
-    toolbar.createParticle();
-}
-
-// creates a new particle when mouse is dragged
-function mouseDragged() {
-    toolbar.createParticle();
 }
