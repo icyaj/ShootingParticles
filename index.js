@@ -14,7 +14,7 @@ function draw() {
 
 // Resize _canvas when window is re-sized
 function windowResized() {
-    resizeCanvas(windowWidth, windowHeight);
+    resizeCanvas(windowWidth, windowHeight*.97);
     toolbar.positionToolbar();
 }
 

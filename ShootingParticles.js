@@ -1,3 +1,4 @@
+// hkxx26 Programming Summative
 
 /** A class that encompasses the toolbar, canvas including the draw-space. */
 
@@ -15,24 +16,29 @@ class ShootingParticles {
     constructor(initGravity = true,initRandomise = false,initViscosity = 0,initParticleColor = 'white',initMaximumParticles = 200) {
 
         // Sets the parameter to the corresponding variable in the class.
-        this._gravity = initGravity;
-        this._randomise = initRandomise;
-        this._viscosity = initViscosity;
-        this._particleColor = initParticleColor;
-        this._maximumParticles = initMaximumParticles;
-        this._particles = [];
+        this.gravity = initGravity;
+        this.randomise = initRandomise;
+        this.viscosity = initViscosity;
+        this.particleColor = initParticleColor;
+        this.maximumParticles = initMaximumParticles;
+        this.particles = [];
 
         // Adds the event listener to lookout for mouse click, drag or a key-press.
         document.addEventListener('drag', () => this.createParticle());
         document.addEventListener('click', () => this.createParticle());
         document.addEventListener('keypress', () => this.keyPressed());
 
+        // Adds the event listener to lookout for html buttons: Toggle Gravity, Toggle Randomise and Clear Particles.
+        document.getElementById('toggleGravity').addEventListener('click',this.changeGravity.bind(this));
+        document.getElementById('toggleRandomise').addEventListener('click',this.changeRandomise.bind(this));
+        document.getElementById('toggleClear').addEventListener('click', this.clearParticles.bind(this));
+
         // Sets up the toolbar and positions it corresponding to the window size.
         this.createToolbar();
         this.positionToolbar();
 
         // Creates the canvas and embeds it into the container. Also disables the scrollbar.
-        this._canvas = createCanvas(windowWidth, windowHeight);
+        this._canvas = createCanvas(windowWidth,windowHeight*.97);
         this._canvas.style('display', 'block');
         this._canvas.parent('canvasContainer');
 
@@ -52,13 +58,21 @@ class ShootingParticles {
     }
 
     /**
-     * Clears all particles if the C key was pressed
+     * Checks to see if the C key is pressed for clearing the particles.
      */
     keyPressed() {
-        // Clears the particles list containing all the instances of particles if the c key is pressed.
+        // Checks if the c key is pressed.
         if (key === 'c' || key === 'C')	{
-            this._particles = [];
+            this.clearParticles();
         }
+    }
+
+    /**
+     * Clears all particles
+     */
+    clearParticles() {
+        // Clears the particles list
+        this.particles = [];
     }
 
     /**
@@ -76,10 +90,10 @@ class ShootingParticles {
         this.createText();
 
         // Updates each element (particle) in the particle array.
-        for (const element of this._particles.values()) {
+        for (const element of this.particles.values()) {
 
             // If gravity is set to true the _particles new velocities would be calculated.
-            if (toolbar._gravity) element.handleInteractions();
+            if (this.gravity) element.handleInteractions();
 
             // Moves each particle, then draws it
             element.move();
@@ -142,14 +156,14 @@ class ShootingParticles {
 
         // Draws the text in the toolbar.
         fill(255);
-        text('Colour', (windowWidth/10)+37, (windowHeight-(windowHeight/20))-5);
-        text('Viscosity', (windowWidth/10)+225, (windowHeight-(windowHeight/20))-5);
-        text('Size', (windowWidth/10)+452, (windowHeight-(windowHeight/20))-5);
-        text('Press the C key to clear the particles', (windowWidth/10)+600, (windowHeight-(windowHeight/20))+5);
+        text('Colour', (windowWidth/10)+37, (windowHeight-(windowHeight/20))-25);
+        text('Viscosity', (windowWidth/10)+225, (windowHeight-(windowHeight/20))-25);
+        text('Size', (windowWidth/10)+452, (windowHeight-(windowHeight/20))-25);
+        text('Press the C key to clear the particles', (windowWidth/10)+600, (windowHeight-(windowHeight/20))-15);
 
         // Draws the toolbar horizontal divider line.
         stroke(126);
-        line(0, windowHeight-(windowHeight/10), windowWidth, windowHeight-(windowHeight/10));
+        line(0, windowHeight-(windowHeight/10)-25, windowWidth, windowHeight-(windowHeight/10)-25);
     }
 
     /**
@@ -157,12 +171,12 @@ class ShootingParticles {
      */
     changeGravity() {
 
-        // Toggles the _gravity button. When false the _gravity variable is set to true and vice versa. The _toggleGravity button background is set to green or red (respectively).
-        if (this._gravity === false) {
-            this._gravity = true;
+        // Toggles the gravity button. When false the gravity variable is set to true and vice versa. The toggleGravity button background is set to green or red (respectively).
+        if (this.gravity === false) {
+            this.gravity = true;
             this._toggleGravity.style('background', 'green');
         } else {
-            this._gravity = false;
+            this.gravity = false;
             this._toggleGravity.style('background', 'red');
         }
 
@@ -173,12 +187,12 @@ class ShootingParticles {
      */
     changeRandomise() {
 
-        // Toggles the _randomise button. When false the _randomise variable is set to true and vice versa. The _toggleRandomise button background is set to green or red (respectively).
-        if (this._randomise === false) {
-            this._randomise = true;
+        // Toggles the _randomise button. When false the randomise variable is set to true and vice versa. The toggleRandomise button background is set to green or red (respectively).
+        if (this.randomise === false) {
+            this.randomise = true;
             this._toggleRandomise.style('background', 'green');
         } else {
-            this._randomise = false;
+            this.randomise = false;
             this._toggleRandomise.style('background', 'red');
         }
     }
@@ -189,14 +203,14 @@ class ShootingParticles {
     setVariables() {
 
         // If the value of randomise is true the values of the colour and size slider is incremented.
-        if (this._randomise === true) {
+        if (this.randomise === true) {
             this._colorSlider.value((this._colorSlider.value() + 5) % 256);
             this._sizeSlider.value((this._sizeSlider.value() + 0.001) % 0.031);
         }
 
         // Sets the particle colour and viscosity to the slider value.
-        this._particleColor = color(this._colorSlider.value(), 255, 255, 127);
-        this._viscosity = this._viscositySlider.value();
+        this.particleColor = color(this._colorSlider.value(), 255, 255, 127);
+        this.viscosity = this._viscositySlider.value();
     }
 
     /**
@@ -205,14 +219,117 @@ class ShootingParticles {
     createParticle() {
 
         // Checks to make sure Particles are only created if the user clicks outside the toolbar inside the canvas.
-        if (mouseY < windowHeight-(windowHeight/10)) {
-            this._particles.push(new Particle(mouseX, mouseY));
+        if ((mouseY < (windowHeight-(windowHeight/10))-25) && (mouseY > 0)) {
+            this.particles.push(new Particle(mouseX, mouseY));
         }
 
         // Deletes the oldest particle if the amount of particles on screen is over the limit.
-        if (this._particles.length > this._maximumParticles) {
-            this._particles.shift();
+        if (this.particles.length > this.maximumParticles) {
+            this.particles.shift();
         }
+    }
+
+    /**
+     * Sets the gravity property.
+     * @param {boolean} newGravity - The boolean variable to set the gravity on or off.
+     * @returns nothing
+     */
+    set gravity(newGravity) {
+        this._gravity = newGravity;
+    }
+
+    /**
+     * Gets the boolean value of the gravity property.
+     * @returns {boolean} this._gravity - Returns the boolean value of the gravity property.
+     */
+    get gravity() {
+        return this._gravity;
+    }
+
+    /**
+     * Sets the randomise property.
+     * @param {boolean} newRandomise - The boolean variable to set the randomise on or off.
+     * @returns nothing
+     */
+    set randomise(newRandomise) {
+        this._randomise = newRandomise;
+    }
+
+    /**
+     * Gets the boolean value of the randomise property.
+     * @returns {boolean} this._randomise - Returns the boolean value of the randomise property.
+     */
+    get randomise() {
+        return this._randomise;
+    }
+
+    /**
+     * Sets the viscosity property.
+     * @param {number} newViscosity - The number variable to set the value of the viscosity.
+     * @returns nothing
+     */
+    set viscosity(newViscosity) {
+        this._viscosity = newViscosity;
+    }
+
+    /**
+     * Gets the number value of the viscosity property.
+     * @returns {number} this._gravity - Returns the number value of the viscosity property.
+     */
+    get viscosity() {
+        return this._viscosity;
+    }
+
+    /**
+     * Sets the particle colour property.
+     * @param {string} newParticleColor - The string variable to set the active colour to be displayed.
+     * @returns nothing
+     */
+    set particleColor(newParticleColor) {
+        this._particleColor = newParticleColor;
+    }
+
+    /**
+     * Gets the string value of the particle colour property.
+     * @returns {string} this._particleColor - Returns the string value of the particle colour property.
+     */
+    get particleColor() {
+        return this._particleColor;
+    }
+
+    /**
+     * Sets the maximum particles property.
+     * @param {number} newMaximumParticles - The number variable to set the maximum number of particles active on the canvas.
+     * @returns nothing
+     */
+    set maximumParticles(newMaximumParticles) {
+        this._maximumParticles = newMaximumParticles;
+    }
+
+    /**
+     * Gets the number value of the maximum particles property.
+     * @returns {number} this._maximumParticles - Returns the number value of the maximum particles property.
+     */
+    get maximumParticles() {
+        return this._maximumParticles;
+    }
+
+    /**
+     * Sets the particles list property.
+     * @param {array} newParticles - The array that contains all the particle classes active on the board.
+     * @returns nothing
+     */
+
+    set particles(newParticles) {
+        this._particles = newParticles;
+    }
+
+    /**
+     * Gets the array of the particles property.
+     * @returns {array} this._particles - Returns the array of the particles property.
+     */
+    get particles() {
+        return this._particles;
     }
 
 }
@@ -231,14 +348,14 @@ class Particle {
     constructor(x = 0, y = 0, velX = random(-.1,.1), velY = random(-.1,.1)) {
 
         // Sets the parameter to the corresponding variable in the class.
-        this._xPos = x;
-        this._yPos = y;
-        this._xVel = velX;
-        this._yVel = velY;
+        this.xPos = x;
+        this.yPos = y;
+        this.xVel = velX;
+        this.yVel = velY;
 
         // Particle mass/size is the slider value plus or minus a constant (0.08). Sets the particle colour depending on the slider value.
-        this._mass = random(toolbar._sizeSlider.value() - 0.008, toolbar._sizeSlider.value() + 0.008);
-        this._color = toolbar._particleColor;
+        this.mass = random(toolbar._sizeSlider.value() - 0.008, toolbar._sizeSlider.value() + 0.008);
+        this.color = toolbar.particleColor;
     }
 
     /**
@@ -247,8 +364,8 @@ class Particle {
     move() {
 
         // Moves the particle depending on the velocity in the x-axis or y-axis.
-        this._xPos += this._xVel;
-        this._yPos += this._yVel;
+        this.xPos += this.xVel;
+        this.yPos += this.yVel;
     }
 
     /**
@@ -257,9 +374,9 @@ class Particle {
     display() {
 
         // Sets the colour for the particle.
-        fill(this._color);
+        fill(this.color);
         // Draws the particle, the mass*1000 give the size.
-        ellipse(this._xPos, this._yPos, this._mass*1000, this._mass*1000);
+        ellipse(this.xPos, this.yPos, this.mass*1000, this.mass*1000);
     }
 
     /**
@@ -279,14 +396,14 @@ class Particle {
         let accY = 0;
 
         // particle interaction the particles attract/repel each other. Checks current particle with all other particles.
-        for (const element of toolbar._particles.values()) {
+        for (const element of toolbar.particles.values()) {
 
             // If the current element is not the same as the current particle.
             if (this != element) {
 
                 // Calculates distance of both particles in the x-axis and y-axis.
-                x = element._xPos - this._xPos;
-                y = element._yPos - this._yPos;
+                x = element.xPos - this.xPos;
+                y = element.yPos - this.yPos;
 
                 // Calculates the hypotenuse between both the particles which is the distance between the two particles.
                 dis = sqrt(x * x + y * y);
@@ -295,7 +412,7 @@ class Particle {
                 if (dis < .5) dis = .5;
 
                 // calculates the force between the particles with a constant (380).
-                force = (dis - 380) * element._mass / dis;
+                force = (dis - 380) * element.mass / dis;
 
                 // Scales the force in the x-axis and y-axis to find the new velocity of the particle.
                 accX += force * x;
@@ -303,11 +420,11 @@ class Particle {
             }
 
             // Makes sure the particles are moved only when the cursor is inside the canvas.
-            if (mouseY < windowHeight-(windowHeight/10)) {
+            if (mouseY < windowHeight - (windowHeight / 10)) {
 
                 // Checks to see the distance of the mouse to the particle.
-                x = mouseX - this._xPos;
-                y = mouseY - this._yPos;
+                x = mouseX - this.xPos;
+                y = mouseY - this.yPos;
                 dis = sqrt(x * x + y * y);
 
                 // Adds a dampening effect to the distance.
@@ -326,21 +443,127 @@ class Particle {
         }
 
         // Updates the particle velocity depending on the 'current velocity' * 'viscosity' + 'scaled force' * 'mass'
-        this._xVel = this._xVel * toolbar._viscosity + accX * this._mass;
-        this._yVel = this._yVel * toolbar._viscosity + accY * this._mass;
+        this.xVel = this.xVel * toolbar.viscosity + accX * this.mass;
+        this.yVel = this.yVel * toolbar.viscosity + accY * this.mass;
 
     }
 
     /**
-     * Sketch from https://www.openprocessing.org,
-     *
-     * Called: Jelly Sim,
-     *
-     * By: nebulaeandstars,
-     *
-     * Link: https://www.openprocessing.org/sketch/587065,
-     *
-     * Licence: https://www.openprocessing.org/home/tos
+     * Sets the x position property.
+     * @param {number} newXPos - The number variable to set the value of the x position.
+     * @returns nothing
      */
+    set xPos(newXPos) {
+        this._xPos = newXPos;
+    }
+
+    /**
+     * Gets the number value of the x position property.
+     * @returns {number} this._xPos - Returns the number value of the x position property.
+     */
+    get xPos() {
+        return this._xPos;
+    }
+
+    /**
+     * Sets the y position property.
+     * @param {number} newYPos - The number variable to set the value of the y position.
+     * @returns nothing
+     */
+    set yPos(newYPos) {
+        this._yPos = newYPos;
+    }
+
+    /**
+     * Gets the number value of the y position property.
+     * @returns {number} this._yPos - Returns the number value of the y position property.
+     */
+    get yPos() {
+        return this._yPos;
+    }
+
+    /**
+     * Sets the x velocity property.
+     * @param {number} newXVel - The number variable to set the value of the x velocity.
+     * @returns nothing
+     */
+    set xVel(newXVel) {
+        this._xVel = newXVel;
+    }
+
+    /**
+     * Gets the number value of the x velocity property.
+     * @returns {number} this._xVel - Returns the number value of the x velocity property.
+     */
+    get xVel() {
+        return this._xVel;
+    }
+
+    /**
+     * Sets the y velocity property.
+     * @param {number} newYVel - The number variable to set the value of the y velocity.
+     * @returns nothing
+     */
+    set yVel(newYVel) {
+        this._yVel = newYVel;
+    }
+
+    /**
+     * Gets the number value of the y velocity property.
+     * @returns {number} this._yVel - Returns the number value of the y velocity property.
+     */
+    get yVel() {
+        return this._yVel;
+    }
+
+    /**
+     * Sets the mass property.
+     * @param {number} newMass - The number variable to set the value of the mass.
+     * @returns nothing
+     */
+    set mass(newMass) {
+        this._mass = newMass;
+    }
+
+    /**
+     * Gets the number value of the mass property.
+     * @returns {number} this._mass - Returns the number value of the mass property.
+     */
+    get mass() {
+        return this._mass;
+    }
+
+    /**
+     * Sets the particle colour property.
+     * @param {string} newColor - The string variable to set the colour of the particle.
+     * @returns nothing
+     */
+    set color(newColor) {
+        this._color = newColor;
+    }
+
+    /**
+     * Gets the string value of the particle colour property.
+     * @returns {string} this._color - Returns the string value of the particle colour property.
+     */
+    get color() {
+        return this._color;
+    }
 
 }
+
+/**
+ * Sketch from https://www.openprocessing.org,
+ *
+ * Called: Jelly Sim,
+ *
+ * Original Sketch By: nebulaeandstars,
+ *
+ * Adapted Sketch By: hkxx26
+ *
+ * Link: https://www.openprocessing.org/sketch/587065,
+ *
+ * Licence: https://creativecommons.org/licenses/by-sa/3.0/
+ *
+ * @license CC-BY-SA-3.0
+ */
