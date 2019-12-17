@@ -28,11 +28,6 @@ class ShootingParticles {
         document.addEventListener('click', () => this.createParticle());
         document.addEventListener('keypress', () => this.keyPressed());
 
-        // Adds the event listener to lookout for html buttons: Toggle Gravity, Toggle Randomise and Clear Particles.
-        document.getElementById('toggleGravity').addEventListener('click',this.changeGravity.bind(this));
-        document.getElementById('toggleRandomise').addEventListener('click',this.changeRandomise.bind(this));
-        document.getElementById('toggleClear').addEventListener('click', this.clearParticles.bind(this));
-
         // Sets up the toolbar and positions it corresponding to the window size.
         this.createToolbar();
         this.positionToolbar();
