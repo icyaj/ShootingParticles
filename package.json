@@ -8,7 +8,7 @@
     "express": "^4.17.1"
   },
   "devDependencies": {
-    "documentation": "^9.1.1",
+    "documentation": "^14.0.0",
     "jsdoc": "^3.6.3"
   },
   "scripts": {
